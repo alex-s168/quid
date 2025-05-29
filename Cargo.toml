@@ -2,5 +2,9 @@
 name = "quid"
 version = "0.1.0"
 edition = "2024"
+license = "MIT OR Apache-2.0"
+description = "fast, concurrent, lock-free UID generation library"
+repository = "https://github.com/alex-s168/quid"
+readme = "README.md"
 
 [dependencies]
