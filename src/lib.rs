@@ -1,18 +1,26 @@
-use std::{cell::Cell, sync::atomic::{AtomicU64, Ordering}};
+#![cfg_attr(not(feature = "std"), no_std)]
+#![feature(thread_local)]
+
+use core::{cell::Cell, sync::atomic::{AtomicU64, Ordering}};
+
+#[cfg(feature = "std")]
+use nostd::fmt;
 
 pub type UidTy = u64;
 
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub struct UID(UidTy);
 
-impl std::fmt::Debug for UID {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+#[cfg(feature = "std")]
+impl fmt::Debug for UID {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "UID({})", self.0)
     }
 }
 
-impl std::fmt::Display for UID {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+#[cfg(feature = "std")]
+impl fmt::Display for UID {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self)
     }
 }
@@ -25,10 +33,11 @@ impl Into<UidTy> for UID {
 
 static GLOBAL_NEXT_UID: AtomicU64 = AtomicU64::new(0);
 
-thread_local! {
-    static UID_BASE: Cell<UidTy> = const { Cell::new(0) };
-    static UID_REM: Cell<UidTy> = const { Cell::new(0) };
-}
+#[thread_local]
+static UID_BASE: Cell<UidTy> = const { Cell::new(0) };
+
+#[thread_local]
+static UID_REM: Cell<UidTy> = const { Cell::new(0) };
 
 static TH_ALLOC_STEP: UidTy = 512;
 
