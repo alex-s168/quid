@@ -1,6 +1,6 @@
 [package]
 name = "quid"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 description = "fast, concurrent, lock-free UID generation library"
@@ -8,12 +8,15 @@ repository = "https://github.com/alex-s168/quid"
 readme = "README.md"
 
 [features]
-default = ["std", "fmt"]
+default = ["std", "fmt", "stable"]
 
 # enable this for UID types to implement Display and Debug
 fmt = ["dep:nostd"]
 
 std = ["dep:nostd", "nostd/std"]
+
+# don't require experimental features. does not work without std
+stable = []
 
 [dependencies]
 nostd = { version = "0.1.4", optional = true }

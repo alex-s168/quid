@@ -1,5 +1,5 @@
 #![cfg_attr(not(feature = "std"), no_std)]
-#![feature(thread_local)]
+#![cfg_attr(not(feature = "stable"), feature(thread_local))]
 
 use core::{cell::Cell, sync::atomic::{AtomicU64, Ordering}};
 
@@ -33,11 +33,19 @@ impl Into<UidTy> for UID {
 
 static GLOBAL_NEXT_UID: AtomicU64 = AtomicU64::new(0);
 
+#[cfg(not(feature = "stable"))]
 #[thread_local]
 static UID_BASE: Cell<UidTy> = const { Cell::new(0) };
 
+#[cfg(not(feature = "stable"))]
 #[thread_local]
 static UID_REM: Cell<UidTy> = const { Cell::new(0) };
+
+#[cfg(feature = "stable")]
+std::thread_local! {
+    static UID_BASE: Cell<UidTy> = const { Cell::new(0) };
+    static UID_REM: Cell<UidTy> = const { Cell::new(0) };
+}
 
 static TH_ALLOC_STEP: UidTy = 512;
 
